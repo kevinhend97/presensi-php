@@ -1,0 +1,14 @@
+.form-event{
+    background-image: url(../bg/6308.jpg);
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    opacity: 0.7;
+    background-color: #464646;
+   
+    min-height: 300px;
+}
+
+table tr {
+    height: 38px;
+}
