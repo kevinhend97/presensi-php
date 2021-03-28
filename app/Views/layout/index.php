@@ -1,11 +1,4 @@
 <!DOCTYPE html>
-<!--
-* CoreUI Pro based Bootstrap Admin Template
-* @version v3.2.0
-* @link https://coreui.io/pro/
-* Copyright (c) 2020 creativeLabs Łukasz Holeczek
-* License (https://coreui.io/pro/license)
--->
 <html lang="en">
   <head>
     <base href="./">
@@ -18,14 +11,19 @@
     <!-- Toasts css -->
     <link href="<?= base_url('include/plugins') ?>/toastr.min.css" rel="stylesheet">
 
+    <!-- Datatable -->
+    <script src="<?= base_url('include/plugins') ?>/DataTables/datatables.min.css"></script>
+
     <?= $this->renderSection('css') ?>
   </head>
   <body class="c-app">
+    <!-- Jquery -->
+    <script src="<?= base_url('include/plugins') ?>/jquery.js"></script>
+
+    <!-- Datatable -->
+    <script src="<?= base_url('include/plugins') ?>/DataTables/datatables.min.js"></script>
     <!-- Toastr JS -->
     <script src="<?= base_url('include/plugins') ?>/toastr.min.js"></script>
-    <!-- Vue JS -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <?= $this->renderSection('js') ?>
     <div class="c-wrapper">
@@ -50,7 +48,5 @@
     <!-- Plugins and scripts required by this view-->
  
     <script src="<?= base_url('include/coreui') ?>/vendors/@coreui/utils/js/coreui-utils.js"></script>
-   
-
   </body>
 </html>

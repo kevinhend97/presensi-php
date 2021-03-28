@@ -20,8 +20,12 @@ class Event extends BaseController
     {
  
         $request = \Config\Services::request();
+
         $list_data = new ServersideModel();
         $where = ['is_active' => 1];
+        $like = array(
+            $this->request->getPost('eventSearch'),$this->request->getPost('locationSearch'),$this->request->getPost('dateSearch')
+        );
                 //Column Order Harus Sesuai Urutan Kolom Pada Header Tabel di bagian View
                 //Awali nama kolom tabel dengan nama tabel->tanda titik->nama kolom seperti pengguna.nama
         $column_order = array('timestamp','event_name','location', 'date');
@@ -33,10 +37,11 @@ class Event extends BaseController
         foreach ($list as $lists) {
             $no++;
             $row    = array();
-            $row[] = date('Y-m-d H:i:s', strtotime($lists->timestamp));
+            $row[] = date('d/m/Y H:i:s', strtotime($lists->timestamp)). " WIB";
             $row[] = $lists->event_name;
             $row[] = $lists->location;
-            $row[] = date('Y-m-d', strtotime($lists->date));
+            $row[] = date('d/m/Y', strtotime($lists->date));
+            $row[] = '';
             $data[] = $row;
         }
         $output = array(
