@@ -54,6 +54,7 @@
                                <div class="card-body">
                                    <form id="formEvent">
                                        <div class="form-group">
+                                           <input type="hidden" name="eventId">
                                            <label for="exampleInputEmail1">Event Name</label>
                                            <input type="text" name="eventName" class="form-control" placeholder="Enter Event Name">
                                        </div>
@@ -65,7 +66,7 @@
    
                                        <div class="form-group">
                                            <label for="exampleInputEmail1">Description</label>
-                                           <textarea name="" class="form-control" name="description" rows="7" style="resize:none;" placeholder="Enter Description"></textarea>
+                                           <textarea class="form-control" name="description" rows="7" style="resize:none;" placeholder="Enter Description"></textarea>
                                        </div>
    
                                        <div class="form-group">
@@ -83,7 +84,7 @@
                                            <input type="time" class="form-control" name="endTime" placeholder="Enter End Time">
                                        </div>
                                        
-                                       <button type="button" class="btn btn-block btn-info">SUBMIT</button>
+                                       <button type="submit" class="btn btn-block btn-info">SUBMIT</button>
                                    </form>
                                </div>
                            </div>
@@ -96,7 +97,7 @@
 
     <script>
         var dataTable;
-
+        var saveMethod;
         $(document).ready(function() {
            var date = $('[name="date"]').val();
             var event = $('[name="eventName"]').val();
@@ -127,6 +128,54 @@
                     }
                 }
             });
+
+            // Validation'
+            $.validator.setDefaults({
+                submitHandler: function submitHandler() {
+                    // eslint-disable-next-line no-alert
+                    store();
+                    tableReload();
+                    $('#formEvent')[0].reset();
+                    $("input,textarea").removeClass("is-valid");
+                }
+            });
+
+            $('#formEvent').validate({
+                rules:{
+                    eventName: 'required',
+                    location: 'required',
+                    date: 'required',
+                    description: 'required',
+                    startTime: 'required',
+                    endTime: 'required'
+                },
+                messages:{
+                    eventName:'Please enter event name',
+                    location: 'Please enter location',
+                    date: 'Please enter date',
+                    description: 'Please enter description',
+                    startTime: 'Please enter start time',
+                    endTime: 'Please enter end time'
+                },
+                errorElement: 'em',
+                errorPlacement: function errorPlacement(error, element) {
+                    error.addClass('invalid-feedback');
+                    if (element.prop('type') === 'checkbox') {
+                        error.insertAfter(element.parent('label'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+                // eslint-disable-next-line object-shorthand
+                highlight: function highlight(element) {
+                    $(element).addClass('is-invalid').removeClass('is-valid');
+                },
+                // eslint-disable-next-line object-shorthand
+                unhighlight: function unhighlight(element) {
+                    $(element).addClass('is-valid').removeClass('is-invalid');
+                }
+            });
+
         });
 
         function tableReload()
@@ -134,16 +183,24 @@
             dataTable.ajax.reload();
         }
 
-        function save()
+        function store()
         {
+            if(saveMethod == 'update')
+            {
+                url = "<?=base_url('event/update/')?>";
+            }
+            else{
+                url = "<?= base_url('event/store') ?>";
+            }
+
             $.ajax({
-                url:"<?= base_url('event/store') ?>",
+                url:url,
                 type:"POST",
                 data:$('#formEvent').serialize(),
                 dataType:"JSON",
                 success:function(res)
                 {
-                    toaster.success('Event has been save');
+                    toastr.success('Event has been save');
                 }
             })
         }

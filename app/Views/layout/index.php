@@ -48,5 +48,7 @@
     <!-- Plugins and scripts required by this view-->
  
     <script src="<?= base_url('include/coreui') ?>/vendors/@coreui/utils/js/coreui-utils.js"></script>
+
+    <script src="<?= base_url('include/coreui') ?>/vendors/jquery-validation/js/jquery.validate.js"></script>
   </body>
 </html>
