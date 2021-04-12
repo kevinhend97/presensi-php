@@ -26,14 +26,17 @@ class Event extends BaseController
         $like = array(
             $this->request->getPost('eventSearch'),$this->request->getPost('locationSearch'),$this->request->getPost('dateSearch')
         );
-                //Column Order Harus Sesuai Urutan Kolom Pada Header Tabel di bagian View
-                //Awali nama kolom tabel dengan nama tabel->tanda titik->nama kolom seperti pengguna.nama
+
+        //Column Order Harus Sesuai Urutan Kolom Pada Header Tabel di bagian View
+        //Awali nama kolom tabel dengan nama tabel->tanda titik->nama kolom seperti pengguna.nama
+
         $column_order = array('timestamp','event_name','location', 'date');
         $column_search = array('event_name','location', 'date');
-        $order = array('timestamp' => 'desc');
+        $order = array('eventId' => 'desc');
         $list = $list_data->get_datatables('tblm_events', $column_order, $column_search, $order, $where);
         $data = array();
         $no = $request->getPost("start");
+
         foreach ($list as $lists) {
             $no++;
             $row    = array();
@@ -41,9 +44,10 @@ class Event extends BaseController
             $row[] = $lists->event_name;
             $row[] = $lists->location;
             $row[] = date('d/m/Y', strtotime($lists->date));
-            $row[] = '';
+            $row[] = '<button type="button" onclick="destroy('.$list->eventId.')" class="btn btn-danger text-light"><i class="cil-ban"></i></button>';
             $data[] = $row;
         }
+        
         $output = array(
             "draw" => $request->getPost("draw"),
             "recordsTotal" => $list_data->count_all('tblm_events', $where),

@@ -35,8 +35,6 @@ $routes->get('/', 'Home::index');
 // Auth
 $routes->get('/login', 'Auth::index');
 
-// Master Equipment
-$routes->get('/master/equipment', 'MasterEquipment::index');
 
 
 

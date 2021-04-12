@@ -7,6 +7,7 @@ class Auth extends BaseController
 	public function __construct()
 	{
 		$this->request = service('request');
+		$this->session = \Config\Services::session();
 	}
 
 	public function index()
@@ -26,23 +27,33 @@ class Auth extends BaseController
 		if($checkUsername)
 		{
 			if (password_verify($password, $checkUsername['password'])){
-				$response = [
-					'kamarApps' => [
-						'query'	=> [
-							'status'		=> 200,
-							'description'	=> 'OK'
-						],
-						'results' => [
-							"username"	=> $checkUsername['username'],
-							"name"		=> $checkUsername['name'],
-							"gender"	=> $checkUsername['gender'],
-							"role"		=> $checkUsername['roleId']
-						]
-					]
-				];
+				if($checkUsername['roleId'] == 1)
+				{
+					$userData = [
+						"username"	=> $checkUsername['username'],
+						"name"		=> $checkUsername['name'],
+						"gender"	=> $checkUsername['gender'],
+						"role"		=> $checkUsername['roleId'],
+						"loggedIn"	=> true
+					];
+
+					$this->session->set($userData);
+
+					$response = [
+						'status'		=> 200,
+						'message'		=> 'Success'
+					];
+				}
+				else
+				{
+					$response = [
+						'status' => 403,
+						'message' => 'You dont have access !'
+					];	
+				}
 			} else {
 				$response = [
-					'success' => false,
+					'status' => 505,
 					'message' => 'Password is Wrong !'
 				];
 			}
@@ -50,7 +61,7 @@ class Auth extends BaseController
 		else
 		{
 			$response = [
-                'success' => false,
+                'status' => 404,
                 'message' => 'Username is not registered !'
             ];
 		}

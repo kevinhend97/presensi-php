@@ -18,45 +18,55 @@
     <title>LOGIN PRESENSI</title>
     <!-- Main styles for this application-->
     <link href="<?= base_url('include/coreui') ?>/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?=base_url('include/css')?>/style.css">
+
+    <!-- style -->
+    <link rel="stylesheet" href="<?= base_url('include/css') ?>/style.css">
+
+    <!-- Font Core UI -->
+    <link href="<?= base_url('include/coreui') ?>/vendors/@coreui/icons/css/free.min.css" rel="stylesheet">
+
   </head>
   <body class="c-app flex-row align-items-center">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+    <!-- Jquery -->
+    <script src="<?= base_url('include/plugins') ?>/jquery.js"></script>
+    <!-- Swal -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card-group">
-            <div class="card p-4">
-              <div class="card-body">
-                <div class="text-center">
-                    <img src="<?= base_url('include/img/s2p.png') ?>" width="180" height="100" alt="">
-                    <h3>PRESENSI</h3>
-                </div>
-                <svg class="c-icon">
-                    <use xlink:href="<?= base_url('include/coreui') ?>/vendors/@coreui/icons/svg/free.svg#cil-envelope-closed"></use>
-                </svg>
-                <label for="">Username</label> 
-                <div class="input-group mb-3">
-                  <input class="form-control" type="text" placeholder="Username">
-                </div>
-                <svg class="c-icon">
-                    <use xlink:href="<?= base_url('include/coreui') ?>/vendors/@coreui/icons/svg/free.svg#cil-lock-locked"></use>
-                </svg>
-                <label for="">Password</label> 
-                <div class="input-group mb-4">
-                  <input class="form-control" type="password" placeholder="Password">
-                </div>
-                <div class="row">
-                  <div class="col-12">
-                    <a href="<?= base_url('dashboard') ?>"><button class="btn btn-info btn-block" type="button">Sign In</button></a>
-                  </div>
+        <div class="col-md-12">
+            <div class="card-group">
+              <div class="card p-5">
+                <img src="<?= base_url('include/bg/20945183.jpg') ?>" alt="">
+              </div>
+              <div class="card p-5 bg-primary text-light">
+                <div class="card-body">
+                 
+                  <h3>SELAMAT DATANG,</h3>
+                  <h4>Aplikasi Presensi Politeknik Negeri Cilacap</h4>
+                 
+                  <form id="form">
+                    <div class="form-group has-icon mt-3 mb-4">
+                      <span class="cil-user form-control-feedback"></span>
+                      <input type="text" name="username" class="form-control" placeholder="Username">
+                    </div>
+  
+                    <div class="form-group has-icon mt-3 mb-4">
+                      <span class="cil-lock-locked form-control-feedback"></span>
+                      <input type="password" name="password" class="form-control" placeholder="Password">
+                    </div>
+                   
+                    <div class="row">
+                      <div class="col-12">
+                        <button type="submit" class="btn btn-warning btn-block btn-radius mb-3 mt-2 p-2" type="button">Sign In</button>
+                        <a href="<?= base_url('dashboard') ?>"><button class="btn btn-Primary btn-block btn-radius-border mb-3 p-2 mt-2" type="button">Forget Password</button></a>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
@@ -65,5 +75,74 @@
     <!--[if IE]><!-->
     <script src="<?= base_url('include/coreui') ?>/vendors/@coreui/icons/js/svgxuse.min.js"></script>
     <!--<![endif]-->
+    <!-- Validation js -->
+    <script src="<?= base_url('include/coreui') ?>/vendors/jquery-validation/js/jquery.validate.js"></script>
   </body>
 </html>
+
+<script>
+  $(function(){
+    // Validation'
+    $.validator.setDefaults({
+        submitHandler: function submitHandler() {
+            // eslint-disable-next-line no-alert
+            login();
+            $('#form')[0].reset();
+            $("input,textarea").removeClass("is-valid");
+        }
+    });
+
+    $('#form').validate({
+        rules:{
+            username: 'required',
+            password: 'required'
+        },
+        messages:{
+          username:'Please enter Username',
+          password: 'Please enter Password'
+        },
+        errorElement: 'em',
+        errorPlacement: function errorPlacement(error, element) {
+            error.addClass('invalid-feedback');
+            if (element.prop('type') === 'checkbox') {
+                error.insertAfter(element.parent('label'));
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        // eslint-disable-next-line object-shorthand
+        highlight: function highlight(element) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+        },
+        // eslint-disable-next-line object-shorthand
+        unhighlight: function unhighlight(element) {
+            $(element).addClass('is-valid').removeClass('is-invalid');
+        }
+    });
+  })
+
+  let login = () => {
+    $.ajax({
+      url: "<?= base_url('auth/auth') ?>",
+      type:"POST",
+      data:$('#form').serialize(),
+      dataType:"JSON",
+      success:function(res)
+      {
+        if(res.status == 200)
+        {
+          window.location = "<?= base_url('dashboard') ?>";
+        }
+        else
+        {
+          Swal.fire(
+            'Oops,',
+            res.message,
+            'warning'
+          )
+        }
+      }
+    })
+  }
+
+</script>

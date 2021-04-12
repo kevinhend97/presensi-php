@@ -71,7 +71,7 @@
    
                                        <div class="form-group">
                                            <label for="exampleInputEmail1">Date</label>
-                                           <input type="date" class="form-control" name="date" placeholder="Enter Date">
+                                           <input type="date" min="<?= date('Y-m-d') ?>" class="form-control" name="date" placeholder="Enter Date">
                                        </div>
    
                                        <div class="form-group">

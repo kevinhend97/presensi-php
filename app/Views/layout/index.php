@@ -10,20 +10,26 @@
     <link href="<?= base_url('include/coreui') ?>/css/style.css" rel="stylesheet">
     <!-- Toasts css -->
     <link href="<?= base_url('include/plugins') ?>/toastr.min.css" rel="stylesheet">
+    <!-- Font Core UI -->
+    <link href="<?= base_url('include/coreui') ?>/vendors/@coreui/icons/css/free.min.css" rel="stylesheet">
 
     <!-- Datatable -->
     <script src="<?= base_url('include/plugins') ?>/DataTables/datatables.min.css"></script>
+
+    <!-- style -->
+    <link rel="stylesheet" href="<?= base_url('include/css') ?>/style.css">
 
     <?= $this->renderSection('css') ?>
   </head>
   <body class="c-app">
     <!-- Jquery -->
     <script src="<?= base_url('include/plugins') ?>/jquery.js"></script>
-
     <!-- Datatable -->
     <script src="<?= base_url('include/plugins') ?>/DataTables/datatables.min.js"></script>
     <!-- Toastr JS -->
     <script src="<?= base_url('include/plugins') ?>/toastr.min.js"></script>
+    <!-- Swal -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <?= $this->renderSection('js') ?>
     <div class="c-wrapper">

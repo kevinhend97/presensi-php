@@ -1,24 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,500;1,900&display=swap');
 body{
-    background-image: url(../bg/3153594.jpg);
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; /* Do not repeat the image */
-    background-size: cover; /* Resize the background image to cover the entire container */
-    background-color: rgba(0, 0, 0, 0,5);
+    font-family: 'Roboto', sans-serif;
 }
 
-.form-event{
-    background-image: url(../bg/6308.jpg);
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; /* Do not repeat the image */
-    background-size: cover; /* Resize the background image to cover the entire container */
-    background-color: rgba(0, 0, 0, 0,5);
+.form-control, .btn-radius{
+    border-radius: 1rem;
 }
 
-.container{
-    opacity: 0.98;
+.btn-radius{
+    background: #EFD945;
+    background: -webkit-linear-gradient(top left, #EFD945, #DDC100);
+    background: -moz-linear-gradient(top left, #EFD945, #DDC100);
+    background: linear-gradient(to bottom right, #EFD945, #DDC100);
 }
 
-.card-group{
-    border-radius: 40%;
-    
+.btn-radius-border{
+    border-radius: 1rem;
+    color: #fff;
+    border: 2px solid #fff !important;
 }
+
+.has-icon .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-icon .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+c

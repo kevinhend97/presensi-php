@@ -1,4 +1,4 @@
-<header class="c-header c-header-light c-header-fixed">
+<header class="c-header c-header-dark bg-info c-header-fixed">
         <ul class="c-header-nav d-md-down-none">
           <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="<?=base_url('dashboard')?>">Dashboard</a></li>
           <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="<?=base_url('event')?>">Events</a></li>
