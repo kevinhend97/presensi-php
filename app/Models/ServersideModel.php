@@ -10,11 +10,12 @@ class ServersideModel extends Model
 	public $builder;
 
 	public function __construct()
-	{
-		parent::__construct();
+    {
+        parent::__construct();
         $this->db = \Config\Database::connect();
-	}
-
+    }
+ 
+ 
 	protected function _get_datatables_query($table, $column_order, $column_search, $order)
 	{
 		$this->builder = $this->db->table($table);

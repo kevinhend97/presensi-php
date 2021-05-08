@@ -178,13 +178,11 @@
 
         });
 
-        function tableReload()
-        {
+        const tableReload = () =>{
             dataTable.ajax.reload();
         }
 
-        function store()
-        {
+        const store = () => {
             if(saveMethod == 'update')
             {
                 url = "<?=base_url('event/update/')?>";
@@ -200,15 +198,93 @@
                 dataType:"JSON",
                 success:function(res)
                 {
+                    tableReload();
                     toastr.success('Event has been save');
                 }
             })
         }
 
-        function edit(id)
-        {
-
+       const destroy = (id) => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                if (result.isConfirmed) {
+                $.ajax({
+                    url:"<?= base_url('event/destroy') ?>",
+                    type:"POST",
+                    data:{eventId:id},
+                    dataType:"JSON",
+                    success:function(resp)
+                    {
+                        if(resp.success == true)
+                        {
+                            tableReload();
+                            toastr.success(resp.message);
+                        }
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                            toastr.error("Status: " + textStatus); 
+                            toastr.error("Error: " + errorThrown); 
+                    }       
+                })
+                }
+            })
         }
+
+       const edit = (id) => {
+           $.ajax({
+               url:"<?= base_url('event/edit') ?>",
+               type:"POST",
+               data:{eventId:id},
+               dataType:"JSON",
+               success:function(resp)
+               {
+                   saveMethod = "update";
+                   $('[name="eventId"]').val(resp.kamarApps.results.eventId);
+                   $('[name="eventName"]').val(resp.kamarApps.results.event_name);
+                   $('[name="location"]').val(resp.kamarApps.results.location);
+                   $('[name="description"]').val(resp.kamarApps.results.description);
+                   $('[name="date"]').val(resp.kamarApps.results.date);
+                   $('[name="startTime"]').val(resp.kamarApps.results.start_time);
+                   $('[name="endTime"]').val(resp.kamarApps.results.end_time);
+               },
+               error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                    toastr.error("Status: " + textStatus); 
+                    toastr.error("Error: " + errorThrown); 
+                }
+           })
+       }
+
+       const qrgenerate = (id) => {
+            $.ajax({
+                url : "<?= base_url('event/qrcode') ?>",
+                type:"POST",
+                data:{eventId:id},
+                dataType:"JSON",
+                success:function(resp)
+                {
+                    console.log(resp);
+                    Swal.fire({
+                        title: 'QR Code',
+                        html: 'Scan or <a href="'+resp.data.image+'" download>Download</a> to attendance your member',
+                        imageUrl: resp.data.image,
+                        imageWidth: 320,
+                        imageHeight: 320,
+                        imageAlt: 'Presensi',
+                    })
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                    toastr.error("Status: " + textStatus); 
+                    toastr.error("Error: " + errorThrown); 
+                }
+            })
+       }
     </script>
 </div>
 <?= $this->endSection() ?>

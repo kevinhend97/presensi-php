@@ -7,6 +7,15 @@ use App\Controllers\BaseController;
 use \App\Models\EventsModel;
 use \App\Models\ServersideModel;
 
+use Endroid\QrCode\Color\Color;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelLow;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+use Endroid\QrCode\Writer\PngWriter;
+
 class Event extends BaseController
 {
 	public function index()
@@ -22,10 +31,7 @@ class Event extends BaseController
         $request = \Config\Services::request();
 
         $list_data = new ServersideModel();
-        $where = ['is_active' => 1];
-        $like = array(
-            $this->request->getPost('eventSearch'),$this->request->getPost('locationSearch'),$this->request->getPost('dateSearch')
-        );
+        $where = array("is_active" => 1);
 
         //Column Order Harus Sesuai Urutan Kolom Pada Header Tabel di bagian View
         //Awali nama kolom tabel dengan nama tabel->tanda titik->nama kolom seperti pengguna.nama
@@ -41,10 +47,10 @@ class Event extends BaseController
             $no++;
             $row    = array();
             $row[] = date('d/m/Y H:i:s', strtotime($lists->timestamp)). " WIB";
-            $row[] = $lists->event_name;
+            $row[] = '<a href="javascript:void(0)" onclick="edit('.$lists->eventId.')">'.$lists->event_name."</a>";
             $row[] = $lists->location;
             $row[] = date('d/m/Y', strtotime($lists->date));
-            $row[] = '<button type="button" onclick="destroy('.$list->eventId.')" class="btn btn-danger text-light"><i class="cil-ban"></i></button>';
+            $row[] = '<button type="button" onclick="destroy('.$lists->eventId.')" class="btn btn-danger text-light"><i class="cil-ban"></i></button><button type="button" onclick="qrgenerate('.$lists->eventId.')" class="btn btn-info text-light"><i class="cil-qr-code"></i></button>';
             $data[] = $row;
         }
         
@@ -121,6 +127,31 @@ class Event extends BaseController
         return $this->response->setJSON($response);
 	}
 
+    public function edit()
+    {
+        $event = new EventsModel();
+        $eventId = $this->request->getPost('eventId');
+
+        $eventDetail = $event->select('eventId, event_name, location, description, date, start_time, end_time')
+        ->where(['eventId' => $eventId, 'is_active' => 1])->get()->getRow();
+
+        if($eventDetail)
+        {
+            $arr['kamarApps']['status_code'] = 201;
+            $arr['kamarApps']['success'] = true;
+            $arr['kamarApps']['message'] = "Success get Data";
+            $arr['kamarApps']['results'] = $eventDetail;
+        }
+        else
+        {
+            $arr['kamarApps']['status_code'] = 404;
+            $arr['kamarApps']['success'] = false;
+            $arr['kamarApps']['message'] = "Data is not found";
+        }
+
+        return $this->response->setJSON($arr);
+    } 
+
 	public function update()
     {
         $event = new EventsModel();
@@ -159,15 +190,84 @@ class Event extends BaseController
 
         $event->set($data);
         $event->where('eventId', $eventId);
-        $role->update();
+        $event->update();
 
         $response = [
             'success' => true,
             'message' => 'Data has been deleted'
         ];
       
+        return $this->response->setJSON($response);
+    }
+
+    public function qrcode()
+    {
+        $eventId = $this->request->getPost('eventId');
+
+        // Check QR Code PNG on Folder Qr Code
+
+        if(!file_exists(ROOTPATH.'/public/qrcode'))
+        {
+            mkdir(ROOTPATH.'/public/qrcode', 0777, true);
+           
+        }
+       
+        if(!file_exists(ROOTPATH.'/public/qrcode/'.$eventId.'.png'))
+        {
+            $this->makeQrCode($eventId);
+        }
+
+        $response = [
+            'apps'      => 'presensi',
+            'status_code' => 201,
+            'success' => true,
+            'data'  => [
+                'image' => 'qrcode/'.$eventId.'.png'
+            ],
+            'timestamp' => date('Y-m-d H:i:s')
+        ];
 
         return $this->response->setJSON($response);
+    }
+
+    private function makeQrCode($id)
+    {
+        $writer = new PngWriter();
+
+        $config         = new \Config\Encryption();
+        $config->key    = 'aBigsecret_ofAtleast32Characters';
+        $config->driver = 'OpenSSL';
+        $config->digest = 'SHA512';
+
+        $encrypter = \Config\Services::encrypter($config);
+
+        $enkripsiData = $encrypter->encrypt(strval($id));
+
+        $base64Encrypt = base64_encode($enkripsiData);
+        // echo json_encode(array("password_hash"  => $base64Encrypt, "password_decrypt" => $encrypter->decrypt(base64_decode($base64Encrypt))));
+      
+        // Create QR code
+        $qrCode = QrCode::create($base64Encrypt)
+        ->setEncoding(new Encoding('UTF-8'))
+        ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
+        ->setSize(300)
+        ->setMargin(10)
+        ->setRoundBlockSizeMode(new RoundBlockSizeModeMargin())
+        ->setForegroundColor(new Color(0, 0, 0))
+        ->setBackgroundColor(new Color(255, 255, 255));
+
+        $result = $writer->write($qrCode);
+
+        header('Content-Type: '.$result->getMimeType());
+        // echo $result->getString();
+
+        // Save it to a file
+        $result->saveToFile(ROOTPATH.'/public/qrcode/'.$id.'.png');
+
+        // Generate a data URI to include image data inline (i.e. inside an <img> tag)
+        $dataUri = $result->getDataUri();
+
+        return true;
     }
 
 

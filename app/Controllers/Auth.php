@@ -30,6 +30,7 @@ class Auth extends BaseController
 				if($checkUsername['roleId'] == 1)
 				{
 					$userData = [
+						"userId"	=> $checkUsername['userId'],
 						"username"	=> $checkUsername['username'],
 						"name"		=> $checkUsername['name'],
 						"gender"	=> $checkUsername['gender'],

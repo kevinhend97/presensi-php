@@ -14,7 +14,7 @@
     <link href="<?= base_url('include/coreui') ?>/vendors/@coreui/icons/css/free.min.css" rel="stylesheet">
 
     <!-- Datatable -->
-    <script src="<?= base_url('include/plugins') ?>/DataTables/datatables.min.css"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.24/datatables.min.css"/>
 
     <!-- style -->
     <link rel="stylesheet" href="<?= base_url('include/css') ?>/style.css">
@@ -25,7 +25,7 @@
     <!-- Jquery -->
     <script src="<?= base_url('include/plugins') ?>/jquery.js"></script>
     <!-- Datatable -->
-    <script src="<?= base_url('include/plugins') ?>/DataTables/datatables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.24/datatables.min.js"></script>
     <!-- Toastr JS -->
     <script src="<?= base_url('include/plugins') ?>/toastr.min.js"></script>
     <!-- Swal -->

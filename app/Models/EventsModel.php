@@ -20,11 +20,6 @@ class EventsModel extends Model
 
 	protected function _get_datatables_query($table, $column_order,$column_search,$order)
 	{
-		// variable form search
-		$event = $this->request->getPost('event');
-		$location = $this->request->getPost('location');
-		$date = date('Y-m-d', strtotime($this->request->getPost('date')));
-
 		$this->builder = $this->db->table($table);
 		// kamu dapat menambahkan Join disini
 
@@ -60,7 +55,7 @@ class EventsModel extends Model
 		}
 	}
 
-	public function get_datatables($table, $column_order, $column_search,$order,$data = '',$like = '')
+	public function get_datatables($table, $column_order, $column_search,$order,$data = '')
 	{
 		$this->_get_datatables_query($table, $column_order, $column_search,$order);
 
@@ -75,58 +70,18 @@ class EventsModel extends Model
 		{
 			$this->builder->where($data);
 		}
-
-		if($like)
-		{
-			if($like[0])
-			{
-				$this->builder->like('event_name',$like[0]);
-			}
-
-			if($like[1])
-			{
-				$this->builder->like('location',$like[1]);
-			}
-
-			if($like[2])
-			{
-				$this->builder->like('location',$like[2]);
-			}
-		}
 		
 		$query = $this->builder->get();
 		return $query->getResult();
 	}
 
-	public function count_filtered($table, $column_order, $column_search,$order,$data = '',$like = '')
+	public function count_filtered($table, $column_order, $column_search,$order,$data = '')
 	{
 		$this->_get_datatables_query($table, $column_order, $column_search,$order);
-
-		$event = $this->request->getPost('event');
-		$location = $this->request->getPost('location');
-		$date = date('Y-m-d', strtotime($this->request->getPost('date')));
 		
 		if($data)
 		{
 			$this->builder->where($data);
-		}
-
-		if($like)
-		{
-			if($like[0])
-			{
-				$this->builder->like('event_name',$like[0]);
-			}
-
-			if($like[1])
-			{
-				$this->builder->like('location',$like[1]);
-			}
-
-			if($like[2])
-			{
-				$this->builder->like('location',$like[2]);
-			}
 		}
 
 		$this->builder->get();
@@ -134,33 +89,11 @@ class EventsModel extends Model
 		return $this->builder->countAll();
 	}
 
-	public function count_all($table, $data='',$like = '')
+	public function count_all($table, $data='')
 	{
-		$event = $this->request->getPost('event');
-		$location = $this->request->getPost('location');
-		$date = date('Y-m-d', strtotime($this->request->getPost('date')));
-
 		if($data)
 		{
 			$this->builder->where($data);
-		}
-
-		if($like)
-		{
-			if($like[0])
-			{
-				$this->builder->like('event_name',$like[0]);
-			}
-
-			if($like[1])
-			{
-				$this->builder->like('location',$like[1]);
-			}
-
-			if($like[2])
-			{
-				$this->builder->like('location',$like[2]);
-			}
 		}
 
 		$this->builder->from($table);
