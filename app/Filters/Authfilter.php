@@ -6,7 +6,7 @@ use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 
-class Auth implements FilterInterface
+class Authfilter implements FilterInterface
 {
 	/**
 	 * Do whatever processing this filter needs to do.
@@ -25,9 +25,9 @@ class Auth implements FilterInterface
 	 */
 	public function before(RequestInterface $request, $arguments = null)
 	{
-		if(!session()->get('loggedIn'))
+		if(!session('userId'))
 		{
-			return redirect()->to('/auth');
+			return redirect()->to('/auth/index');
 		}
 	}
 
@@ -45,6 +45,6 @@ class Auth implements FilterInterface
 	 */
 	public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
 	{
-		//
+		
 	}
 }

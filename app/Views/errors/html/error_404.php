@@ -1,84 +1,39 @@
 <!DOCTYPE html>
+<!--
+* CoreUI Pro based Bootstrap Admin Template
+* @version v3.2.0
+* @link https://coreui.io/pro/
+* Copyright (c) 2020 creativeLabs Łukasz Holeczek
+* License (https://coreui.io/pro/license)
+-->
 <html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>404 Page Not Found</title>
+  <head>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>404 Not Found</title>
+    <!-- Main styles for this application-->
+    <link href="<?= base_url('include/coreui') ?>/css/style.css" rel="stylesheet">
+  </head>
+  <body class="c-app flex-row align-items-center">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+            <img src="<?= base_url('include/img/undraw_empty.svg') ?>" class="img-fluid" alt="">
+          <div class="clearfix">
+            <h1 class="float-left display-3 mr-4">404</h1>
+            <h4 class="pt-3">Oops! You're lost.</h4>
+            <p class="text-muted">The page you are looking for was not found.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- CoreUI and necessary plugins-->
+    <script src="<?= base_url('include/coreui') ?>/vendors/@coreui/coreui-pro/js/coreui.bundle.min.js"></script>
+    <!--[if IE]><!-->
+    <script src="<?= base_url('include/coreui') ?>/vendors/@coreui/icons/js/svgxuse.min.js"></script>
+    <!--<![endif]-->
 
-	<style>
-	div.logo {
-		height: 200px;
-		width: 155px;
-		display: inline-block;
-		opacity: 0.08;
-		position: absolute;
-		top: 2rem;
-		left: 50%;
-		margin-left: -73px;
-	}
-	body {
-		height: 100%;
-		background: #fafafa;
-		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-		color: #777;
-		font-weight: 300;
-	}
-	h1 {
-		font-weight: lighter;
-		letter-spacing: 0.8;
-		font-size: 3rem;
-		margin-top: 0;
-		margin-bottom: 0;
-		color: #222;
-	}
-	.wrap {
-		max-width: 1024px;
-		margin: 5rem auto;
-		padding: 2rem;
-		background: #fff;
-		text-align: center;
-		border: 1px solid #efefef;
-		border-radius: 0.5rem;
-		position: relative;
-	}
-	pre {
-		white-space: normal;
-		margin-top: 1.5rem;
-	}
-	code {
-		background: #fafafa;
-		border: 1px solid #efefef;
-		padding: 0.5rem 1rem;
-		border-radius: 5px;
-		display: block;
-	}
-	p {
-		margin-top: 1.5rem;
-	}
-	.footer {
-		margin-top: 2rem;
-		border-top: 1px solid #efefef;
-		padding: 1em 2em 0 2em;
-		font-size: 85%;
-		color: #999;
-	}
-	a:active,
-	a:link,
-	a:visited {
-		color: #dd4814;
-	}
-</style>
-</head>
-<body>
-	<div class="wrap">
-		<h1>404 - File Not Found</h1>
-
-		<p>
-			<?php if (! empty($message) && $message !== '(null)') : ?>
-				<?= esc($message) ?>
-			<?php else : ?>
-				Sorry! Cannot seem to find the page you were looking for.
-			<?php endif ?>
-		</p>
-	</div>
-</body>
+  </body>
 </html>

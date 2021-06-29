@@ -60,7 +60,7 @@
                     <div class="row">
                       <div class="col-12">
                         <button type="submit" class="btn btn-warning btn-block btn-radius mb-3 mt-2 p-2" type="button">Sign In</button>
-                        <a href="<?= base_url('dashboard') ?>"><button class="btn btn-Primary btn-block btn-radius-border mb-3 p-2 mt-2" type="button">Forget Password</button></a>
+                        <a href="javascript:void(0)" onclick="forgotPassword()"><button class="btn btn-Primary btn-block btn-radius-border mb-3 p-2 mt-2" type="button">Forget Password</button></a>
                       </div>
                     </div>
                   </form>
@@ -131,7 +131,14 @@
       {
         if(res.status == 200)
         {
-          window.location = "<?= base_url('dashboard') ?>";
+          if(res.role == 'admin')
+          {
+            window.location = "<?= base_url('dashboard') ?>";
+          }
+          else if(res.role == 'member')
+          {
+            window.location = "<?= base_url('mobile') ?>";
+          }
         }
         else
         {
@@ -145,4 +152,40 @@
     })
   }
 
+  const forgotPassword = () => {
+    Swal.fire({
+      title: 'Submit your Username',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Check & Reset',
+      showLoaderOnConfirm: true,
+      preConfirm: (login) => {
+        return fetch(`<?= base_url('users/reset/') ?>/${login}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(response.statusText)
+            }
+            return response.json()
+          })
+          .catch(error => {
+            Swal.showValidationMessage(
+              `Username is Null`
+            )
+          })
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          'yaaaaaayyyy....',
+          'Success reset Password',
+          'success'
+          
+        )
+      }
+    })
+  }
 </script>

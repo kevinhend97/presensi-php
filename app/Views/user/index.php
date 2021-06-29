@@ -81,6 +81,7 @@
                     searchable: false
                 }],
                 "ordering": true,
+                "order" :[[0, "desc"]], 
                 "info": true,
                 "serverSide": true,
                 "stateSave" : true,
@@ -103,7 +104,7 @@
                     store();
                     tableReload();
                     $('#formMember')[0].reset();
-                    $("input,textarea").removeClass("is-valid");
+                    $("input,textarea,select").removeClass("is-valid");
                 }
             });
 

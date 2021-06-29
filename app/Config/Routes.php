@@ -32,6 +32,13 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/', 'Auth::index');
 
+$routes->get('/attendance', 'Attendance::index', ['filter' => 'authfilter']);
+$routes->get('/dashboard', 'Dashboard::index', ['filter' => 'authfilter']);
+$routes->get('/event', 'Event::index', ['filter' => 'authfilter']);
+$routes->get('/users', 'Users::index', ['filter' => 'authfilter']);
+$routes->get('/mobile', 'Mobile::index', ['filter' => 'authfilter']);
+
+
 // Auth
 $routes->get('/login', 'Auth::index');
 

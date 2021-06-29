@@ -7,7 +7,13 @@ use \App\Models\ServersideModel;
 class Users extends BaseController
 {
 
-    public function index(){
+    public function index()
+    {
+        if(session('role') == 3)
+		{
+			return view('errors/html/error_404');
+		}
+
         $data['pages'] = "Member";
         
         return view('user/index', $data);
@@ -55,23 +61,32 @@ class Users extends BaseController
     {
         $user = new UsersModel();
 
-        $userList =  $user->select('userId,name, username,password')
-                        ->where('is_active', 1)
+        $userList =  $user->select('userId,name, username,password,gender')
+                        ->where(['is_active' => 1, 'roleId' => 3])
                         ->orderBy('roleId', 'ASC')->get()->getResult();
 
         $arr['kamarApps'] = array();
-
+		
         if($userList)
         {
+            $arr['kamarApps']['status_code'] = 201;
+			$arr['kamarApps']['success'] = true;
+			$arr['kamarApps']['message'] = "Success get Data";
+			$arr['kamarApps']['count'] = count($userList);
+			$arr['kamarApps']['information'] = array(
+				"apps"				=> "Presensi",
+				"access_date"		=> date('d-m-Y') 
+			);
             foreach($userList as $list)
             {
                 $arr['kamarApps']['results'][] = array(
                         "userId"   	=> $list->userId,
                         "name"     	=> $list->name,
-						"username"	=> $list->username
+						"username"	=> $list->username,
+                        "gender"    => $list->gender == 1 ? "MALE" : "FEMALE",
                 );
             }
-            $arr['kamarApps']['count'] = count($roleList);
+            $arr['kamarApps']['count'] = count($userList);
         }
         else
         {
@@ -82,6 +97,28 @@ class Users extends BaseController
         return $this->response->setJSON($arr);
                     
     }
+
+    public function listSelect()
+    {
+        $user = new UsersModel();
+
+        $userList =  $user->select('userId,name, username,password')
+                        ->where(['is_active' => 1, 'roleId' => 3])
+                        ->orderBy('roleId', 'ASC')->get()->getResult();   
+        
+        if($userList)
+        {
+            foreach($userList as $list)
+            {
+                $arr[] = array(
+                    "id"   	=> $list->userId,
+                    "text"     	=> $list->name,
+                );
+            }
+        }
+
+        return $this->response->setJSON($arr);
+    } 
 	
     public function store()
     {
@@ -166,6 +203,40 @@ class Users extends BaseController
 
         $user->set($data);
         $user->where('userId', $this->request->getPost('userId'));
+        $user->update();
+
+        $response = [
+            'success' => true,
+            'message' => 'Data has been save'
+        ];
+
+        return $this->response->setJSON($response);
+    }
+
+    public function reset($username)
+    {
+        $user = new UsersModel();
+
+        $checkUsername = $user->where('username', $username)->first();
+
+        $data = [
+            'password'	=> password_hash('12345678', PASSWORD_DEFAULT)
+        ];
+
+        if(!$checkUsername)
+        {
+            $response = [
+                'success' => false,
+                'message' => 'Username Not Exist on database'
+            ];
+
+            return $this->response->setJSON($response);
+            die();
+        }
+       
+
+        $user->set($data);
+        $user->where('username', $username);
         $user->update();
 
         $response = [

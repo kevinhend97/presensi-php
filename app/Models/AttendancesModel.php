@@ -6,8 +6,8 @@ use CodeIgniter\Model;
 
 class AttendancesModel extends Model
 {
-	protected $table                = 'attendances';
+	protected $table                = 'tblt_attendance';
 	protected $primaryKey           = 'id';
-	protected $allowedFields        = ['attendanceId', 'userId', 'eventId', 'attendanceTatus', 'attachment', 'message'];
+	protected $allowedFields        = ['attendanceId', 'userId', 'eventId', 'attendanceStatus', 'attachment', 'message'];
 
 }

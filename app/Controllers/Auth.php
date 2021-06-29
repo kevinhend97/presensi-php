@@ -12,7 +12,18 @@ class Auth extends BaseController
 
 	public function index()
 	{
-		return view('auth/login');
+		if(session('role') == 3)
+		{
+			return redirect()->to('/mobile');
+		}
+		else if(session('role') == 1 || session('role') == 2)
+		{
+			return redirect()->to('/dashboard');
+		}
+		else{
+			return view('auth/login');
+		}
+
 	}
 
 	public function auth()
@@ -27,7 +38,7 @@ class Auth extends BaseController
 		if($checkUsername)
 		{
 			if (password_verify($password, $checkUsername['password'])){
-				if($checkUsername['roleId'] == 1)
+				if($checkUsername['roleId'] == 1 || $checkUsername['roleId'] == 2)
 				{
 					$userData = [
 						"userId"	=> $checkUsername['userId'],
@@ -42,6 +53,26 @@ class Auth extends BaseController
 
 					$response = [
 						'status'		=> 200,
+						'role'			=> 'admin',
+						'message'		=> 'Success'
+					];
+				}
+				else if($checkUsername['roleId'] == 3)
+				{
+					$userData = [
+						"userId"	=> $checkUsername['userId'],
+						"username"	=> $checkUsername['username'],
+						"name"		=> $checkUsername['name'],
+						"gender"	=> $checkUsername['gender'],
+						"role"		=> $checkUsername['roleId'],
+						"loggedIn"	=> true
+					];
+
+					$this->session->set($userData);
+
+					$response = [
+						'status'		=> 200,
+						'role'			=> 'member',
 						'message'		=> 'Success'
 					];
 				}
@@ -68,6 +99,12 @@ class Auth extends BaseController
 		}
 
 		return $this->response->setJSON($response);
+	}
+
+	public function logout()
+	{
+		$this->session->destroy();
+		return view('auth/login');
 	}
 
 	//--------------------------------------------------------------------

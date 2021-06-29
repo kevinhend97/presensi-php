@@ -52,33 +52,39 @@ class ServersideModel extends Model
 	public function get_datatables($table, $column_order, $column_search, $order, $data = '')
 	{
 		$this->_get_datatables_query($table, $column_order, $column_search, $order);
-		if ($_POST['length'] != -1)
-			$this->builder->limit($_POST['length'], $_POST['start']);
-		if ($data) {
-			$this->builder->where($data);
-		}
-	
-		$query = $this->builder->get();
-		return $query->getResult();
+     if ($_POST['length'] != -1)
+         $this->builder->limit($_POST['length'], $_POST['start']);
+     if ($data) {
+         $this->builder->where($data);
+     }
+ 
+     $query = $this->builder->get();
+     return $query->getResult();
 	}
 	
 	public function count_filtered($table, $column_order, $column_search, $order, $data = '')
 	{
 		$this->_get_datatables_query($table, $column_order, $column_search, $order);
-		if ($data) {
+
+		if($data) 
+		{
 			$this->builder->where($data);
 		}
-		$this->builder->get();
-		return $this->builder->countAll();
+
+		// $this->builder->get();
+
+		return $this->builder->countAllResults();
 	}
 	
 	public function count_all($table, $data = '')
 	{
-		if ($data) {
+		
+		if($data) 
+		{
 			$this->builder->where($data);
 		}
-		$this->builder->from($table);
+		// $this->builder->from($table);
 	
-		return $this->builder->countAll();
+		return $this->builder->countAllResults();
 	}
 }

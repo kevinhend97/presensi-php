@@ -11,26 +11,6 @@
             <div class="row">
                 <div class="col-md-7 col-xs-12">
                     <h1 class="text-muted">EVENT</h1>
-                    <div class="row">
-                        <div class="col-md-4 col-xs-12">
-                            <div class="form-group">
-                                <label for="">Event Name</label>
-                                <input type="text" name="eventSearch" onchange="tableReload()" placeholder="Search by Event Name" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-xs-12">
-                            <div class="form-group">
-                                <label for="">Location</label>
-                                <input type="text" name="locationSearch" onchange="tableReload()" placeholder="Search by Event Location" class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-xs-12">
-                            <div class="form-group">
-                                <label for="">Date</label>
-                                <input type="date" name="dateSearch" onchange="tableReload()" placeholder="Search by Event Date" class="form-control">
-                            </div>
-                        </div>
-                    </div>
                     <div class="table-responsive">
                         <table id="tabel_serverside" style="height:100%;" cellspacing="0" class="table display">
                             <thead>
@@ -99,11 +79,6 @@
         var dataTable;
         var saveMethod;
         $(document).ready(function() {
-           var date = $('[name="date"]').val();
-            var event = $('[name="eventName"]').val();
-            var location = $('[name="location"]').val();
-
-            console.log(event)
             dataTable = $('#tabel_serverside').DataTable({
                 "processing" : true,
                 columnDefs: [{
@@ -112,14 +87,14 @@
                     searchable: false
                 }],
                 "ordering": true,
+                "order" :[[0, "desc"]], 
                 "info": true,
                 "serverSide": true,
-                "stateSave" : true,
+                "stateSave" : false,
                 "bFilter": false ,
                 "ajax":{
                     url :"<?php echo base_url("event/listdata"); ?>", // json datasource
                     type: "post",  // method  , by default get
-                    data:{'event':event,'location':location,'date':date},
                     error: function(){  // error handling
                         $(".tabel_serverside-error").html("");
                         $("#tabel_serverside").append('<tbody class="tabel_serverside-error"><tr><th colspan="3">Data Tidak Ditemukan di Server</th></tr></tbody>');

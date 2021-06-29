@@ -18,8 +18,14 @@ use Endroid\QrCode\Writer\PngWriter;
 
 class Event extends BaseController
 {
+
 	public function index()
 	{
+        if(session('role') == 3)
+		{
+			return view('errors/html/error_404');
+		}
+
 		$data['pages'] = "Events";
 
 		return view('event/index', $data);
@@ -31,14 +37,14 @@ class Event extends BaseController
         $request = \Config\Services::request();
 
         $list_data = new ServersideModel();
-        $where = array("is_active" => 1);
+        $where = array('is_active' => 1);
 
         //Column Order Harus Sesuai Urutan Kolom Pada Header Tabel di bagian View
         //Awali nama kolom tabel dengan nama tabel->tanda titik->nama kolom seperti pengguna.nama
 
-        $column_order = array('timestamp','event_name','location', 'date');
-        $column_search = array('event_name','location', 'date');
-        $order = array('eventId' => 'desc');
+        $column_order = array('tblm_events.timestamp','tblm_events.event_name','tblm_events.location', 'tblm_events.date');
+        $column_search = array('tblm_events.event_name','tblm_events.location', 'tblm_events.date');
+        $order = array('tblm_events.eventId' => 'DESC');
         $list = $list_data->get_datatables('tblm_events', $column_order, $column_search, $order, $where);
         $data = array();
         $no = $request->getPost("start");
@@ -58,7 +64,7 @@ class Event extends BaseController
             "draw" => $request->getPost("draw"),
             "recordsTotal" => $list_data->count_all('tblm_events', $where),
             "recordsFiltered" => $list_data->count_filtered('tblm_events', $column_order, $column_search, $order, $where),
-            "data" => $data,
+            "data" => $data
         );
  
         return json_encode($output);
@@ -69,8 +75,8 @@ class Event extends BaseController
         $event = new EventsModel();
 
         $eventList =  $event->select('eventId, event_name, location, description, date, start_time, end_time')
-                        ->where('is_active', 1)
-                        ->orderBy('eventId', 'DESC')->get()->getResult();
+                        ->where(['is_active' => 1, 'DATE(date) >=' => date('Y-m-d')])
+                        ->orderBy('date', 'DESC')->get()->getResult();
 
         $arr['kamarApps'] = array();
 		$arr['kamarApps']['information'] = array(
@@ -101,6 +107,28 @@ class Event extends BaseController
         
 
         return $this->response->setJSON($arr);               
+    }
+
+    public function eventSelect()
+    {
+        $event = new EventsModel();
+
+        $eventList =  $event->select('eventId, event_name, location, description, date, start_time, end_time')
+                        ->where('is_active', 1)
+                        ->orderBy('eventId', 'DESC')->get()->getResult();
+
+        if($eventList)
+        {
+            foreach($eventList as $list)
+            {
+                $arr[] = array(
+                    "id"   	=> $list->eventId,
+                    "text"     	=> $list->event_name,
+                );
+            }
+        }
+
+        return $this->response->setJSON($arr);
     }
 
 	public function store()
@@ -234,20 +262,15 @@ class Event extends BaseController
     {
         $writer = new PngWriter();
 
-        $config         = new \Config\Encryption();
-        $config->key    = 'aBigsecret_ofAtleast32Characters';
-        $config->driver = 'OpenSSL';
-        $config->digest = 'SHA512';
+        $encrypter = \Config\Services::encrypter();
 
-        $encrypter = \Config\Services::encrypter($config);
-
-        $enkripsiData = $encrypter->encrypt(strval($id));
-
-        $base64Encrypt = base64_encode($enkripsiData);
-        // echo json_encode(array("password_hash"  => $base64Encrypt, "password_decrypt" => $encrypter->decrypt(base64_decode($base64Encrypt))));
-      
+        // $enkripsiData = base64_encode($encrypter->encrypt());
+        
+        // echo $enkripsiData.'<br>';
+        // echo $encrypter->decrypt(base64_decode($enkripsiData));
+        // die();
         // Create QR code
-        $qrCode = QrCode::create($base64Encrypt)
+        $qrCode = QrCode::create(base64_encode(strval($id)))
         ->setEncoding(new Encoding('UTF-8'))
         ->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
         ->setSize(300)

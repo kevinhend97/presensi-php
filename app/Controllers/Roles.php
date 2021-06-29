@@ -7,6 +7,10 @@ class Roles extends BaseController
 {
     public function index()
     {
+        if(session('role') == 3)
+		{
+			return view('errors/html/error_404');
+		}
         return view('roles/index');
     }
 
